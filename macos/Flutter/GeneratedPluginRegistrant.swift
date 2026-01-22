@@ -9,6 +9,10 @@ import cloud_firestore
 import firebase_auth
 import firebase_core
 import firebase_storage
+<<<<<<< HEAD
+=======
+import path_provider_foundation
+>>>>>>> rizal
 import sqflite_darwin
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
@@ -16,5 +20,9 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FLTFirebaseAuthPlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseAuthPlugin"))
   FLTFirebaseCorePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseCorePlugin"))
   FLTFirebaseStoragePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseStoragePlugin"))
+<<<<<<< HEAD
+=======
+  PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
+>>>>>>> rizal
   SqflitePlugin.register(with: registry.registrar(forPlugin: "SqflitePlugin"))
 }
