@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'routes/app_routes.dart';
-import 'core/theme/app_theme.dart';
+// import 'core/theme/app_theme.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
+      theme: ThemeData(useMaterial3: true, primarySwatch: Colors.blue),
       initialRoute: AppRoutes.splash,
       routes: AppRoutes.routes,
     );
