@@ -1,22 +1,34 @@
-class Product {
+class ProductModel {
   final String id;
   final String name;
-  final int price;
-  final String imageUrl;
+  final double price;
+  final String image;
+  final bool exclusive;
+  final bool collaboration;
+  final String releaseDate; // 🔥 STRING DULU
 
-  Product({
+  ProductModel({
     required this.id,
     required this.name,
     required this.price,
-    required this.imageUrl,
+    required this.image,
+    required this.exclusive,
+    required this.collaboration,
+    required this.releaseDate,
   });
 
-  factory Product.fromMap(String id, Map<String, dynamic> data) {
-    return Product(
+  factory ProductModel.fromFirestore(
+    String id,
+    Map<String, dynamic> data,
+  ) {
+    return ProductModel(
       id: id,
-      name: data['name'],
-      price: data['price'],
-      imageUrl: data['imageUrl'],
+      name: data['name'] ?? '',
+      price: (data['price'] as num).toDouble(), // 🔥 AMAN
+      image: data['image'] ?? '',
+      exclusive: data['exclusive'] ?? false,
+      collaboration: data['collaboration'] ?? false,
+      releaseDate: data['releaseDate'] ?? '',
     );
   }
 }
