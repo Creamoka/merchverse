@@ -1,81 +1,77 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MerchVerseApp());
-}
-
-class MerchVerseApp extends StatelessWidget {
-  const MerchVerseApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'MerchVerse',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: const OrderSummaryPage(),
-    );
-  }
-}
-
 class OrderSummaryPage extends StatelessWidget {
-  const OrderSummaryPage({super.key});
+  const OrderSummaryPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: const SizedBox(),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: const Text(
-          'Cart - Order Summary',
+          'Order Summary',
           style: TextStyle(
-            color: Colors.black,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
         ),
-        centerTitle: false,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            color: Colors.grey[300],
+            height: 1,
+          ),
+        ),
       ),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Container(
-          color: Colors.white,
-          margin: const EdgeInsets.only(top: 16),
-          padding: const EdgeInsets.all(24),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Logo
-              const Text(
-                'MERCHVERSE',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 24),
 
-              // Order Summary Header
-              const Text(
-                'Order Summary',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
+              // MERCHVERSE Header
+              const Center(
+                child: Text(
+                  'MERCHVERSE',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 3,
+                  ),
                 ),
               ),
-              const SizedBox(height: 4),
-              const Text(
-                'Check the stuff of your order before proceeding',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-                textAlign: TextAlign.center,
+              const SizedBox(height: 24),
+
+              // Order Summary Title and Description
+              const Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'Order Summary',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Check the details of your order before proceeding.',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -84,30 +80,25 @@ class OrderSummaryPage extends StatelessWidget {
               const SizedBox(height: 16),
 
               // Order Items
-              const OrderItem(
-                imagePath:
-                    'assets/images/hatsune_miku_figure.jpeg', // GANTI: Gambar Hatsune Miku figure
+              _buildOrderItem(
+                imageAsset: 'assets/images/miku1.jpg',
                 title:
-                    'Hatsune Miku - Hatsune Miku Trio Try-iT Prize Figure Figure Cat Ver.',
-                price: '\$310.00',
+                    'Hatsune Miku - Hatsune Miku "Tip-Tpy~" Prize Figure (Paint Cat Ver.)',
+                price: '\$30.00',
               ),
               const SizedBox(height: 16),
-
-              const OrderItem(
-                imagePath:
-                    'assets/images/sakura_miku.jpeg', // GANTI: Gambar Sakura Miku
+              _buildOrderItem(
+                imageAsset: 'assets/images/miku2.jpg',
                 title:
-                    'Hatsune Miku - Sakura Miku Noodle Stopper Prize Figure [FuRyu-Ver]',
-                price: '\$310.00',
+                    'Hatsune Miku - Sakura Miku Noodle Stopper Prize Figure (White Ver.)',
+                price: '\$30.00',
               ),
               const SizedBox(height: 16),
-
-              const OrderItem(
-                imagePath:
-                    'assets/images/hatsune_dress.jpeg', // GANTI: Gambar Hatsune Miku dress
+              _buildOrderItem(
+                imageAsset: 'assets/images/miku3.jpg',
                 title:
-                    'Hatsune Miku - Hatsune Miku Trio Try-iT Prize Figure Figure Retro Ver.',
-                price: '\$310.00',
+                    'Hatsune Miku - Hatsune Miku "Tip-Tpy~" Prize Figure (Classical Retro Ver.)',
+                price: '\$30.00',
               ),
               const SizedBox(height: 24),
 
@@ -115,110 +106,65 @@ class OrderSummaryPage extends StatelessWidget {
               Divider(color: Colors.grey[300], thickness: 1),
               const SizedBox(height: 16),
 
-              // Price Summary
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Order Subtotal',
-                    style: TextStyle(fontSize: 14, color: Colors.black87),
-                  ),
-                  Text(
-                    '\$930.00',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Estimate Shipping',
-                    style: TextStyle(fontSize: 14, color: Colors.black87),
-                  ),
-                  Text(
-                    'FREE',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.green,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Estimate tax',
-                    style: TextStyle(fontSize: 14, color: Colors.black87),
-                  ),
-                  Text(
-                    '\$10.00',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
+              // Pricing Details
+              _buildPriceRow('Order Subtotal', '\$930.00'),
+              const SizedBox(height: 12),
+              _buildPriceRow('Estimate Shipping', 'FREE', isFree: true),
+              const SizedBox(height: 12),
+              _buildPriceRow('Estimate Tax', '\$10.00'),
+              const SizedBox(height: 20),
 
               // Divider
               Divider(color: Colors.grey[300], thickness: 1),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
               // Total
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Total',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
                     ),
                   ),
-                  Text(
+                  const Text(
                     '\$940.00',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 4),
-
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Including \$89.00 in taxes & 3 in handling',
-                  style: TextStyle(fontSize: 11, color: Colors.grey),
+              Text(
+                'Shipping & taxes are calculated at checkout.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
                 ),
               ),
               const SizedBox(height: 24),
 
-              // Secure Info
+              // Security Notice
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.lock_outline, size: 16, color: Colors.grey[600]),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Secure checkout. Privacy & safety with end-secure',
-                    style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                  Icon(
+                    Icons.lock_outline,
+                    size: 18,
+                    color: Colors.grey[600],
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Secure Checkout. Shopping is always safe and secure.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -227,14 +173,14 @@ class OrderSummaryPage extends StatelessWidget {
               // Pay Now Button
               SizedBox(
                 width: double.infinity,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () {
                     // Handle payment
+                    _showPaymentSuccessDialog(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4DA6E8),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: const Color(0xFF0EA5E9),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -242,66 +188,66 @@ class OrderSummaryPage extends StatelessWidget {
                   ),
                   child: const Text(
                     'Pay Now',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
       ),
     );
   }
-}
 
-class OrderItem extends StatelessWidget {
-  final String imagePath;
-  final String title;
-  final String price;
-
-  const OrderItem({
-    super.key,
-    required this.imagePath,
-    required this.title,
-    required this.price,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildOrderItem({
+    required String imageAsset,
+    required String title,
+    required String price,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Image
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Container(
-            width: 50,
-            height: 50,
-            color: Colors.grey[100],
-            child: Image.asset(
-              imagePath,
+        // Product Image
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(8),
+            image: const DecorationImage(
+              image: AssetImage('assets/images/placeholder.jpg'),
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Center(
-                  child: Icon(Icons.image, size: 25, color: Colors.grey[400]),
-                );
-              },
             ),
+          ),
+          child: Icon(
+            Icons.image,
+            color: Colors.grey[400],
+            size: 30,
           ),
         ),
         const SizedBox(width: 12),
 
-        // Title
+        // Product Details
         Expanded(
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.black87,
-              height: 1.4,
-            ),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 13,
+                  height: 1.4,
+                  color: Colors.black87,
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
         const SizedBox(width: 12),
@@ -310,12 +256,83 @@ class OrderItem extends StatelessWidget {
         Text(
           price,
           style: const TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildPriceRow(String label, String value, {bool isFree = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 15,
+            color: Colors.grey[800],
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: isFree ? FontWeight.bold : FontWeight.w600,
+            color: isFree ? Colors.black : Colors.black87,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showPaymentSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.green[600],
+                size: 64,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Payment Successful!',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Your order has been placed successfully.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

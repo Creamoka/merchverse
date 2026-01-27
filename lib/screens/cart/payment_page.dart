@@ -1,230 +1,209 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MerchVerseApp());
-}
-
-class MerchVerseApp extends StatelessWidget {
-  const MerchVerseApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'MerchVerse',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: const PaymentPage(),
-    );
-  }
-}
-
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({super.key});
+  const PaymentPage({Key? key}) : super(key: key);
 
   @override
   State<PaymentPage> createState() => _PaymentPageState();
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  String selectedPayment = 'Credit Card';
+  String _selectedPaymentMethod = 'Credit/Card';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: const SizedBox(),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: const Text(
-          'Cart - Payment',
+          'Payment',
           style: TextStyle(
-            color: Colors.black,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
         ),
-        centerTitle: false,
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          color: Colors.white,
-          margin: const EdgeInsets.only(top: 16),
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Payment',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Credit Card
-              PaymentMethodOption(
-                title: 'Credit Card',
-                icon: Icons.credit_card,
-                isSelected: selectedPayment == 'Credit Card',
-                onTap: () {
-                  setState(() {
-                    selectedPayment = 'Credit Card';
-                  });
-                },
-              ),
-              const SizedBox(height: 12),
-
-              // Paypal
-              PaymentMethodOption(
-                title: 'Paypal',
-                icon: Icons.paypal_outlined,
-                isSelected: selectedPayment == 'Paypal',
-                onTap: () {
-                  setState(() {
-                    selectedPayment = 'Paypal';
-                  });
-                },
-              ),
-              const SizedBox(height: 12),
-
-              // Afterpay
-              PaymentMethodOption(
-                title: 'Afterpay',
-                icon: Icons.payment_outlined,
-                isSelected: selectedPayment == 'Afterpay',
-                onTap: () {
-                  setState(() {
-                    selectedPayment = 'Afterpay';
-                  });
-                },
-              ),
-              const SizedBox(height: 24),
-
-              // Return to Method link
-              InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: const Row(
-                  children: [
-                    Icon(Icons.arrow_back, size: 16, color: Color(0xFF4DA6E8)),
-                    SizedBox(width: 6),
-                    Text(
-                      'Return to Method',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Color(0xFF4DA6E8),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Order Summary button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Handle order summary
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4DA6E8),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'Order Summary',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-            ],
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            color: Colors.grey[300],
+            height: 1,
           ),
+        ),
+      ),
+      backgroundColor: Colors.grey[50],
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            const Text(
+              'Payment',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Credit Card Option
+            _buildPaymentOption(
+              method: 'Credit/Card',
+              logo: 'VISA',
+              isSelected: _selectedPaymentMethod == 'Credit/Card',
+            ),
+            const SizedBox(height: 12),
+
+            // Paypal Option
+            _buildPaymentOption(
+              method: 'Paypal',
+              logo: 'P',
+              isSelected: _selectedPaymentMethod == 'Paypal',
+            ),
+            const SizedBox(height: 12),
+
+            // Alternatife Option
+            _buildPaymentOption(
+              method: 'Alternatife',
+              logo: 'a/Pay',
+              isSelected: _selectedPaymentMethod == 'Alternatife',
+            ),
+            const SizedBox(height: 24),
+
+            // Return to Method Link
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.arrow_back_ios,
+                    size: 14,
+                    color: Colors.blue[600],
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Return to Method',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.blue[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Order Summary Button
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navigate to order summary
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0EA5E9),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 0,
+                ),
+                child: const Text(
+                  'Order Summary',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-}
 
-class PaymentMethodOption extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const PaymentMethodOption({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+  Widget _buildPaymentOption({
+    required String method,
+    required String logo,
+    required bool isSelected,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedPaymentMethod = method;
+        });
+      },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isSelected ? const Color(0xFF4DA6E8) : Colors.grey[300]!,
+            color: isSelected ? const Color(0xFF0EA5E9) : Colors.grey[300]!,
             width: isSelected ? 2 : 1,
           ),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF0EA5E9).withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  )
+                ]
+              : [],
         ),
         child: Row(
           children: [
-            Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected
-                      ? const Color(0xFF4DA6E8)
-                      : Colors.grey[400]!,
-                  width: 2,
-                ),
-              ),
-              child: isSelected
-                  ? Center(
-                      child: Container(
-                        width: 10,
-                        height: 10,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xFF4DA6E8),
-                        ),
-                      ),
-                    )
-                  : null,
+            // Radio button icon
+            Icon(
+              isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
+              color: isSelected ? const Color(0xFF0EA5E9) : Colors.grey[400],
+              size: 22,
             ),
             const SizedBox(width: 12),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? Colors.black : Colors.black87,
+
+            // Payment method name
+            Expanded(
+              child: Text(
+                method,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: isSelected ? const Color(0xFF0EA5E9) : Colors.grey[800],
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                ),
               ),
             ),
-            const Spacer(),
-            Icon(icon, size: 20, color: Colors.grey[600]),
+
+            // Payment logo/brand
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                logo,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[700],
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
           ],
         ),
       ),

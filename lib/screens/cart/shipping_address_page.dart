@@ -1,380 +1,460 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MerchVerseApp());
-}
-
-class MerchVerseApp extends StatelessWidget {
-  const MerchVerseApp({super.key});
+class ShippingMethodPage extends StatefulWidget {
+  const ShippingMethodPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'MerchVerse',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: const ShippingAddressPage(),
-    );
-  }
+  State<ShippingMethodPage> createState() => _ShippingMethodPageState();
 }
 
-class ShippingAddressPage extends StatefulWidget {
-  const ShippingAddressPage({super.key});
-
-  @override
-  State<ShippingAddressPage> createState() => _ShippingAddressPageState();
-}
-
-class _ShippingAddressPageState extends State<ShippingAddressPage> {
-  final TextEditingController countryController = TextEditingController();
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
-  final TextEditingController postalCodeController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-
-  bool saveForNextTime = false;
+class _ShippingMethodPageState extends State<ShippingMethodPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _countryController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _postalCodeController = TextEditingController();
+  final _phoneController = TextEditingController();
+  bool _saveInformation = false;
 
   @override
   void dispose() {
-    countryController.dispose();
-    firstNameController.dispose();
-    lastNameController.dispose();
-    addressController.dispose();
-    cityController.dispose();
-    postalCodeController.dispose();
-    phoneController.dispose();
+    _countryController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _addressController.dispose();
+    _cityController.dispose();
+    _postalCodeController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: const SizedBox(),
         title: const Text(
           'Cart - Shipping',
           style: TextStyle(
-            color: Colors.black,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
         ),
-        centerTitle: false,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            color: Colors.grey[300],
+            height: 1,
+          ),
+        ),
       ),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Container(
-          color: Colors.white,
-          margin: const EdgeInsets.only(top: 16),
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Shipping Address',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Country/Region
-              TextField(
-                controller: countryController,
-                decoration: InputDecoration(
-                  hintText: 'Country/Region',
-                  hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF4DA6E8)),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+                const Text(
+                  'Shipping Address',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // First Name & Last Name
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: firstNameController,
-                      decoration: InputDecoration(
-                        hintText: 'First Name',
-                        hintStyle: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 14,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF4DA6E8),
-                          ),
-                        ),
+                const SizedBox(height: 24),
+                
+                // Country/Region Field
+                TextFormField(
+                  controller: _countryController,
+                  decoration: InputDecoration(
+                    hintText: 'Country/Region',
+                    hintStyle: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 14,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TextField(
-                      controller: lastNameController,
-                      decoration: InputDecoration(
-                        hintText: 'Last Name',
-                        hintStyle: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 14,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF4DA6E8),
-                          ),
-                        ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Address
-              TextField(
-                controller: addressController,
-                decoration: InputDecoration(
-                  hintText: 'Address',
-                  hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF4DA6E8)),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(
+                        color: Colors.blue,
+                        width: 2,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // City & Postal Code
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: cityController,
-                      decoration: InputDecoration(
-                        hintText: 'City',
-                        hintStyle: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 14,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF4DA6E8),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TextField(
-                      controller: postalCodeController,
-                      decoration: InputDecoration(
-                        hintText: 'Postal Code',
-                        hintStyle: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 14,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF4DA6E8),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Phone
-              TextField(
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  hintText: 'Phone',
-                  hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF4DA6E8)),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Checkbox
-              Row(
-                children: [
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: Checkbox(
-                      value: saveForNextTime,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          saveForNextTime = value ?? false;
-                        });
-                      },
-                      activeColor: const Color(0xFF4DA6E8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'Save this information for next time',
-                    style: TextStyle(fontSize: 13, color: Colors.black87),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Return to cart link
-              InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: const Row(
+                const SizedBox(height: 16),
+                
+                // First Name and Last Name Row
+                Row(
                   children: [
-                    Icon(Icons.arrow_back, size: 16, color: Color(0xFF4DA6E8)),
-                    SizedBox(width: 6),
-                    Text(
-                      'Return to cart',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Color(0xFF4DA6E8),
-                        fontWeight: FontWeight.w500,
+                    Expanded(
+                      child: TextFormField(
+                        controller: _firstNameController,
+                        decoration: InputDecoration(
+                          hintText: 'First Name',
+                          hintStyle: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Colors.blue,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _lastNameController,
+                        decoration: InputDecoration(
+                          hintText: 'Last Name',
+                          hintStyle: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Colors.blue,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // Continue to shipping button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Handle continue to shipping
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4DA6E8),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                const SizedBox(height: 16),
+                
+                // Address Field
+                TextFormField(
+                  controller: _addressController,
+                  decoration: InputDecoration(
+                    hintText: 'Address',
+                    hintStyle: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 14,
                     ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'Continue to shipping',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(
+                        color: Colors.blue,
+                        width: 2,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                
+                // City and Postal Code Row
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _cityController,
+                        decoration: InputDecoration(
+                          hintText: 'City',
+                          hintStyle: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Colors.blue,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _postalCodeController,
+                        decoration: InputDecoration(
+                          hintText: 'Postal Code',
+                          hintStyle: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Colors.blue,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                
+                // Phone Field
+                TextFormField(
+                  controller: _phoneController,
+                  decoration: InputDecoration(
+                    hintText: 'Phone',
+                    hintStyle: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 14,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(
+                        color: Colors.blue,
+                        width: 2,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                  ),
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 16),
+                
+                // Save Information Checkbox
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Checkbox(
+                        value: _saveInformation,
+                        onChanged: (value) {
+                          setState(() {
+                            _saveInformation = value ?? false;
+                          });
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        side: BorderSide(
+                          color: Colors.grey[400]!,
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Save this information for next time',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                
+                // Return to Cart Link
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.arrow_back_ios,
+                        size: 14,
+                        color: Colors.blue[700],
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Return to cart',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.blue[700],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                
+                // Continue to Shipping Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        // Handle form submission
+                        // Navigate to next page or process data
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue[600],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      'Continue to shipping',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
         ),
       ),
