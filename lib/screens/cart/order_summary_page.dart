@@ -5,7 +5,7 @@ void main() {
 }
 
 class MerchVerseApp extends StatelessWidget {
-  const MerchVerseApp({Key? key}) : super(key: key);
+  const MerchVerseApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class MerchVerseApp extends StatelessWidget {
 }
 
 class OrderSummaryPage extends StatelessWidget {
-  const OrderSummaryPage({Key? key}) : super(key: key);
+  const OrderSummaryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -260,11 +260,11 @@ class OrderItem extends StatelessWidget {
   final String price;
 
   const OrderItem({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.title,
     required this.price,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

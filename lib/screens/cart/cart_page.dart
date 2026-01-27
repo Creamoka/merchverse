@@ -5,7 +5,7 @@ void main() {
 }
 
 class MerchVerseApp extends StatelessWidget {
-  const MerchVerseApp({Key? key}) : super(key: key);
+  const MerchVerseApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class MerchVerseApp extends StatelessWidget {
 }
 
 class CartPage extends StatefulWidget {
-  const CartPage({Key? key}) : super(key: key);
+  const CartPage({super.key});
 
   @override
   State<CartPage> createState() => _CartPageState();
@@ -249,11 +249,11 @@ class CartItem extends StatelessWidget {
   final VoidCallback onRemove;
 
   const CartItem({
-    Key? key,
+    super.key,
     required this.data,
     required this.onQuantityChanged,
     required this.onRemove,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ void main() {
 }
 
 class MerchVerseApp extends StatelessWidget {
-  const MerchVerseApp({Key? key}) : super(key: key);
+  const MerchVerseApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class MerchVerseApp extends StatelessWidget {
 }
 
 class ShippingMethodPage extends StatefulWidget {
-  const ShippingMethodPage({Key? key}) : super(key: key);
+  const ShippingMethodPage({super.key});
 
   @override
   State<ShippingMethodPage> createState() => _ShippingMethodPageState();
@@ -161,11 +161,11 @@ class ShippingMethodOption extends StatelessWidget {
   final VoidCallback onTap;
 
   const ShippingMethodOption({
-    Key? key,
+    super.key,
     required this.title,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

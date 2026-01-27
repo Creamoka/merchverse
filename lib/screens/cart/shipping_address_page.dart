@@ -5,7 +5,7 @@ void main() {
 }
 
 class MerchVerseApp extends StatelessWidget {
-  const MerchVerseApp({Key? key}) : super(key: key);
+  const MerchVerseApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class MerchVerseApp extends StatelessWidget {
 }
 
 class ShippingAddressPage extends StatefulWidget {
-  const ShippingAddressPage({Key? key}) : super(key: key);
+  const ShippingAddressPage({super.key});
 
   @override
   State<ShippingAddressPage> createState() => _ShippingAddressPageState();
