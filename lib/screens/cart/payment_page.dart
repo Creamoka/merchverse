@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:merchverse/routes/app_routes.dart';
 
 class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
@@ -109,7 +110,7 @@ class _PaymentPageState extends State<PaymentPage> {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  // Navigate to order summary
+                  Navigator.pushNamed(context, AppRoutes.orderSummary);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0EA5E9),

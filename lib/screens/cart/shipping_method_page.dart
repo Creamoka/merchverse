@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:merchverse/routes/app_routes.dart';
 
 class ShippingMethodSelectionPage extends StatefulWidget {
   const ShippingMethodSelectionPage({super.key});
@@ -102,7 +103,7 @@ class _ShippingMethodSelectionPageState
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle navigation to payment
+                  Navigator.pushNamed(context, AppRoutes.payment);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue[600],

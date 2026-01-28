@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:merchverse/routes/app_routes.dart';
 
-class ShippingMethodPage extends StatefulWidget {
-  const ShippingMethodPage({super.key});
+class ShippingAddressPage extends StatefulWidget {
+  const ShippingAddressPage({super.key});
 
   @override
-  State<ShippingMethodPage> createState() => _ShippingMethodPageState();
+  State<ShippingAddressPage> createState() => _ShippingAddressPageState();
 }
 
-class _ShippingMethodPageState extends State<ShippingMethodPage> {
+class _ShippingAddressPageState extends State<ShippingAddressPage> {
   final _formKey = GlobalKey<FormState>();
   final _countryController = TextEditingController();
   final _firstNameController = TextEditingController();
@@ -431,8 +432,7 @@ class _ShippingMethodPageState extends State<ShippingMethodPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // Handle form submission
-                        // Navigate to next page or process data
+                        Navigator.pushNamed(context, AppRoutes.shippingMethod);
                       }
                     },
                     style: ElevatedButton.styleFrom(

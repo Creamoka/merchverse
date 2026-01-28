@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:merchverse/routes/app_routes.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
+
+  static const Color _accent = Color(0xFF6DBFFF);
 
   @override
   Widget build(BuildContext context) {
@@ -27,48 +30,64 @@ class CartPage extends StatelessWidget {
     ];
 
     return Scaffold(
+      backgroundColor: Colors.white,
+
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Image.asset('assets/images/logo.png', height: 40),
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        foregroundColor: Colors.black,
+        titleSpacing: 16,
+        title: Row(
+          children: [
+            const Text(
+              'MERCHVERSE',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Image.asset('assets/images/logo.png', height: 22),
+          ],
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.favorite_border, color: Colors.red),
-            onPressed: () {},
+            icon: const Icon(Icons.favorite_border),
+            onPressed: () {
+              Navigator.pushNamed(context, '/wishlist');
+            },
           ),
-          IconButton(
-            icon: const Icon(Icons.check_box_outlined, color: Colors.blue),
-            onPressed: () {},
-          ),
+          const SizedBox(width: 6),
         ],
       ),
 
-      // ================= BODY =================
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
           const Text(
             'Your Stuff',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 4),
-          const Text(
+          const SizedBox(height: 6),
+          Text(
             'Need anything else? continue shopping',
-            style: TextStyle(fontSize: 13, color: Colors.grey),
+            style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 22),
 
           ...cartItems.map((item) => _buildCartItem(context, item)),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
 
-          // ===== TOTAL =====
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
               Text(
                 'Estimate total',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
               ),
               Text(
                 '\$930.00',
@@ -76,23 +95,25 @@ class CartPage extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
-          const Text(
-            'Taxes, Discounts and shipping calculated at checkout',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
+          const SizedBox(height: 6),
+          Text(
+            'Taxes, discounts and shipping calculated at checkout',
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
 
-          // ===== CHECKOUT BUTTON =====
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.shippingAddress);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
+                elevation: 0,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(14),
                 ),
               ),
               child: const Text(
@@ -108,54 +129,35 @@ class CartPage extends StatelessWidget {
           const SizedBox(height: 12),
 
           Row(
-            children: const [
-              Icon(Icons.lock_outline, size: 16, color: Colors.grey),
-              SizedBox(width: 8),
+            children: [
+              Icon(Icons.lock_outline, size: 16, color: Colors.grey.shade600),
+              const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'Secure Checkout. Shopping is always safe and secure',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                 ),
               ),
             ],
           ),
         ],
       ),
-
-      // ================= BOTTOM NAV =================
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 0,
-        onTap: (index) {
-          if (index == 2) {
-            Navigator.pushNamed(context, '/history');
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart), label: 'Product'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
-        ],
-      ),
     );
   }
 
-  // ================= CART ITEM =================
   Widget _buildCartItem(BuildContext context, Map<String, dynamic> item) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 28),
+      padding: const EdgeInsets.only(bottom: 22),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // IMAGE
           Container(
             width: 110,
             height: 140,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              color: Colors.grey[100],
+              color: Colors.grey.shade100,
+              border: Border.all(color: Colors.grey.shade200),
             ),
             child: Padding(
               padding: const EdgeInsets.all(10),
@@ -165,9 +167,8 @@ class CartPage extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 16),
 
-          // CONTENT
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,36 +179,34 @@ class CartPage extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 14.5,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                     height: 1.3,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 Text(
                   item['price'],
                   style: const TextStyle(
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 6),
-                const Text(
+                Text(
                   'Date : 01/01/2026',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 12),
 
                 Row(
                   children: [
                     GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/wishlist');
-                      },
-                      child: const Text(
-                        'Move To Wishlist',
+                      onTap: () => Navigator.pushNamed(context, '/wishlist'),
+                      child: Text(
+                        'Move to Wishlist',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.grey,
+                          color: Colors.grey.shade700,
                           decoration: TextDecoration.underline,
                         ),
                       ),
@@ -224,34 +223,10 @@ class CartPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-
-                // TAGS
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 8,
-                  children: [
-                    _tag('Exclusive', Colors.grey),
-                    _tag('Collaboration', Colors.blue),
-                  ],
-                ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _tag(String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 12, color: color),
       ),
     );
   }

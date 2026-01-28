@@ -3,199 +3,217 @@ import 'package:flutter/material.dart';
 class WishlistPage extends StatelessWidget {
   const WishlistPage({super.key});
 
+  static const Color _accent = Color(0xFF6DBFFF);
+
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> wishlistItems = [
       {
         'image': 'assets/images/hatsune_miku_1.png',
-        'title': 'Hatsune Miku - Hatsune Miku Trio-Try-IT Prize Figure (Paint Girl Ver.)',
+        'title':
+            'Hatsune Miku - Hatsune Miku Trio-Try-IT Prize Figure (Paint Girl Ver.)',
         'price': '\$310.00',
         'sku': 'Pre-Order released date: 03/2025',
       },
       {
         'image': 'assets/images/hatsune_miku_2.png',
-        'title': 'Hatsune Miku - Sakura Miku Noodle Stopper Prize Figure (Wink Ver.)',
+        'title':
+            'Hatsune Miku - Sakura Miku Noodle Stopper Prize Figure (Wink Ver.)',
         'price': '\$310.00',
         'sku': 'Pre-Order released date: 03/2025',
       },
       {
         'image': 'assets/images/hatsune_miku_3.png',
-        'title': 'Hatsune Miku - Hatsune Miku Trio-Try-IT Prize Figure (Classical Retro Ver.)',
+        'title':
+            'Hatsune Miku - Hatsune Miku Trio-Try-IT Prize Figure (Classical Retro Ver.)',
         'price': '\$310.00',
         'sku': 'Pre-Order released date: 03/2025',
       },
     ];
 
     return Scaffold(
+      backgroundColor: Colors.white,
+
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        foregroundColor: Colors.black,
+        titleSpacing: 16,
         title: Row(
           children: [
             const Text(
               'MERCHVERSE',
               style: TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
               ),
             ),
             const SizedBox(width: 8),
-            Image.asset('assets/images/logo.png', height: 24),
+            Image.asset('assets/images/logo.png', height: 22),
           ],
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.favorite_border, color: Colors.red),
+            icon: const Icon(Icons.favorite_border),
             onPressed: () {},
           ),
           IconButton(
-            icon: const Icon(Icons.shopping_bag_outlined, color: Colors.black),
-            onPressed: () {},
+            icon: const Icon(Icons.shopping_bag_outlined),
+            onPressed: () {
+              Navigator.pushNamed(context, '/cart');
+            },
           ),
+          const SizedBox(width: 6),
         ],
       ),
+
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
           const Text(
             'Wishlist',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
-          const Text(
+          const SizedBox(height: 6),
+          Text(
             'The "I want this so badly" page',
             style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
+              fontSize: 13,
+              color: Colors.grey.shade600,
             ),
           ),
-          const SizedBox(height: 24),
-          ...wishlistItems
-              .map((item) => _buildWishlistItem(context, item))
-              ,
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Product'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
+          const SizedBox(height: 22),
+
+          ...wishlistItems.map((item) => _buildWishlistItem(context, item)),
         ],
       ),
     );
   }
 
   Widget _buildWishlistItem(BuildContext context, Map<String, dynamic> item) {
-    return Column(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 100,
-              height: 120,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.grey[200],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // IMAGE
+              Container(
+                width: 100,
+                height: 120,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.grey.shade100,
+                  border: Border.all(color: Colors.grey.shade200),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    item['image'],
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-              child: Image.asset(
-                item['image'],
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item['title'],
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    item['price'],
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item['sku'],
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
+              const SizedBox(width: 14),
 
-                  // TAGS (sesuai gambar)
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      _tag(
-                        'Exclusive',
-                        const Color(0xFFBDBDBD), // border abu
-                        const Color(0xFF9E9E9E), // text abu
+              // CONTENT
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item['title'],
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        height: 1.3,
                       ),
-                      _tag(
-                        'Collaboration',
-                        const Color(0xFF64B5F6), // border biru muda
-                        const Color(0xFF42A5F5), // text biru
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      item['price'],
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item['sku'],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _tag(
+                          'Exclusive',
+                          Colors.grey.shade300,
+                          Colors.grey.shade700,
+                        ),
+                        _tag(
+                          'Collaboration',
+                          const Color(0xFFBDE6FF),
+                          _accent,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF4A90E2),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+            ],
+          ),
+
+          const SizedBox(height: 14),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/cart');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _accent,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
               ),
-            ),
-            child: const Text(
-              'Add to Cart',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
+              child: const Text(
+                'Add to Cart',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 24),
-      ],
+        ],
+      ),
     );
   }
 
-  // TAG WIDGET (warna sesuai desain)
   Widget _tag(String text, Color borderColor, Color textColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
-        border: Border.all(color: borderColor, width: 1.5),
+        border: Border.all(color: borderColor, width: 1.4),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Text(

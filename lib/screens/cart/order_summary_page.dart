@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:merchverse/routes/app_routes.dart';
 
 class OrderSummaryPage extends StatelessWidget {
   const OrderSummaryPage({super.key});
@@ -176,7 +177,7 @@ class OrderSummaryPage extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Handle payment
+                    Navigator.pushNamed(context, AppRoutes.paymentSuccess);
                     _showPaymentSuccessDialog(context);
                   },
                   style: ElevatedButton.styleFrom(
