@@ -40,10 +40,10 @@ class AppRoutes {
     wishlist: (_) => const WishlistPage(),
     history: (_) => const HistoryPage(),
     account: (_) => const AccountPage(),
-    shippingAddress: (_) => const ShippingAddressPage(),
+    shippingAddress: (_) => const ShippingAddressPage(cartItems: [],),
     shippingMethod: (_) => const ShippingMethodSelectionPage(),
-    payment: (_) => const PaymentPage(),
-    orderSummary: (_) => const OrderSummaryPage(),
+    payment: (_) => const PaymentPage(cartItems: [], shippingAddress: {}, shippingMethod: '', shippingPrice: 0,),
+    orderSummary: (_) => const OrderSummaryPage(cartItems: [], shippingMethod: '', shippingPrice: 0, paymentMethod: '',),
     paymentSuccess: (_) => const PaymentSuccessPage(),
   };
 }

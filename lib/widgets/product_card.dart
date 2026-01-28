@@ -1,11 +1,60 @@
 import 'package:flutter/material.dart';
 import '../models/product_model.dart';
 import '../screens/product/product_detail_page.dart';
+import '../services/firebase/wishlist_service.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductCard extends StatefulWidget {
   final ProductModel product;
 
   const ProductCard({super.key, required this.product});
+
+  @override
+  State<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  final wishlistService = WishlistService();
+  bool isInWishlist = false;
+  final String userId = 'currentUserId'; // TODO: ganti pakai FirebaseAuth.instance.currentUser!.uid
+
+  @override
+  void initState() {
+    super.initState();
+    _checkWishlist();
+  }
+
+  Future<void> _checkWishlist() async {
+    final exists = await wishlistService.isInWishlist(userId, widget.product.id);
+    setState(() => isInWishlist = exists);
+  }
+
+  Future<void> _toggleWishlist() async {
+    if (isInWishlist) {
+      await wishlistService.removeFromWishlist(userId, widget.product.id);
+      setState(() => isInWishlist = false);
+
+      _showSnackBar('Removed from wishlist!');
+    } else {
+      await wishlistService.addToWishlist(userId, widget.product);
+      setState(() => isInWishlist = true);
+
+      _showSnackBar('Added to wishlist!');
+    }
+  }
+
+  void _showSnackBar(String message) {
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 1),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +65,7 @@ class ProductCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => ProductDetailPage(product: product),
+            builder: (_) => ProductDetailPage(product: widget.product),
           ),
         );
       },
@@ -35,7 +84,7 @@ class ProductCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                product.image,
+                widget.product.imageUrl,
                 width: 90,
                 height: 110,
                 fit: BoxFit.cover,
@@ -56,7 +105,7 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.name,
+                    widget.product.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -67,9 +116,8 @@ class ProductCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-
                   Text(
-                    '\$${product.price.toStringAsFixed(2)}',
+                    '\$${widget.product.price.toStringAsFixed(2)}',
                     style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: 13,
@@ -77,17 +125,14 @@ class ProductCard extends StatelessWidget {
                       color: Colors.grey.shade700,
                     ),
                   ),
-
                   const SizedBox(height: 10),
-
-                  // TAGS
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: [
                       _chip('Original', primary),
-                      if (product.exclusive) _chip('Exclusive', primary),
-                      if (product.collaboration) _chip('Collaboration', primary),
+                      if (widget.product.exclusive) _chip('Exclusive', primary),
+                      if (widget.product.collaboration) _chip('Collaboration', primary),
                     ],
                   ),
                 ],
@@ -95,9 +140,20 @@ class ProductCard extends StatelessWidget {
             ),
 
             // FAVORITE ICON
-            IconButton(
-              icon: const Icon(Icons.favorite_border, color: Colors.black),
-              onPressed: () {},
+            InkWell(
+              onTap: _toggleWishlist,
+              borderRadius: BorderRadius.circular(50),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) =>
+                    ScaleTransition(scale: animation, child: child),
+                child: Icon(
+                  isInWishlist ? Icons.favorite : Icons.favorite_border,
+                  key: ValueKey(isInWishlist),
+                  color: Colors.redAccent,
+                  size: 28,
+                ),
+              ),
             ),
           ],
         ),
@@ -111,7 +167,7 @@ class ProductCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color),
-        color: color.withValues(alpha: 0.10),
+        color: color.withOpacity(0.1),
       ),
       child: Text(
         text,

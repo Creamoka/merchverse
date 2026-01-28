@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:merchverse/routes/app_routes.dart';
+import '../../models/cart_item_model.dart';
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({super.key});
+  final List<CartItemModel> cartItems;
+  final Map<String, dynamic> shippingAddress;
+  final String shippingMethod;
+  final int shippingPrice;
+
+  const PaymentPage({
+    super.key,
+    required this.cartItems,
+    required this.shippingAddress,
+    required this.shippingMethod,
+    required this.shippingPrice,
+  });
 
   @override
   State<PaymentPage> createState() => _PaymentPageState();
@@ -13,6 +25,11 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cartItems = widget.cartItems;
+    final shippingAddress = widget.shippingAddress;
+    final shippingMethod = widget.shippingMethod;
+    final shippingPrice = widget.shippingPrice;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -21,20 +38,14 @@ class _PaymentPageState extends State<PaymentPage> {
         ),
         title: const Text(
           'Payment',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: Colors.grey[300],
-            height: 1,
-          ),
+          child: Container(color: Colors.grey[300], height: 1),
         ),
       ),
       backgroundColor: Colors.grey[50],
@@ -46,50 +57,24 @@ class _PaymentPageState extends State<PaymentPage> {
             const SizedBox(height: 20),
             const Text(
               'Payment',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 24),
 
-            // Credit Card Option
-            _buildPaymentOption(
-              method: 'Credit/Card',
-              logo: 'VISA',
-              isSelected: _selectedPaymentMethod == 'Credit/Card',
-            ),
+            // Payment Options
+            _buildPaymentOption('Credit/Card', 'VISA'),
             const SizedBox(height: 12),
-
-            // Paypal Option
-            _buildPaymentOption(
-              method: 'Paypal',
-              logo: 'P',
-              isSelected: _selectedPaymentMethod == 'Paypal',
-            ),
+            _buildPaymentOption('Paypal', 'P'),
             const SizedBox(height: 12),
-
-            // Alternatife Option
-            _buildPaymentOption(
-              method: 'Alternatife',
-              logo: 'a/Pay',
-              isSelected: _selectedPaymentMethod == 'Alternatife',
-            ),
+            _buildPaymentOption('Alternative', 'a/Pay'),
             const SizedBox(height: 24),
 
-            // Return to Method Link
+            // Return link
             InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: () => Navigator.pop(context),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.arrow_back_ios,
-                    size: 14,
-                    color: Colors.blue[600],
-                  ),
+                  Icon(Icons.arrow_back_ios, size: 14, color: Colors.blue[600]),
                   const SizedBox(width: 4),
                   Text(
                     'Return to Method',
@@ -104,28 +89,33 @@ class _PaymentPageState extends State<PaymentPage> {
             ),
             const SizedBox(height: 16),
 
-            // Order Summary Button
+            // Continue to Order Summary
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.orderSummary);
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.orderSummary,
+                    arguments: {
+                      'cartItems': cartItems, // tetap List<CartItemModel>
+                      'shippingAddress': shippingAddress,
+                      'shippingMethod': shippingMethod,
+                      'shippingPrice': shippingPrice,
+                      'paymentMethod': _selectedPaymentMethod,
+                    },
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0EA5E9),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                      borderRadius: BorderRadius.circular(8)),
                   elevation: 0,
                 ),
                 child: const Text(
                   'Order Summary',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
                 ),
               ),
             ),
@@ -135,16 +125,11 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Widget _buildPaymentOption({
-    required String method,
-    required String logo,
-    required bool isSelected,
-  }) {
+  Widget _buildPaymentOption(String method, String logo) {
+    final isSelected = _selectedPaymentMethod == method;
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _selectedPaymentMethod = method;
-        });
+        setState(() => _selectedPaymentMethod = method);
       },
       child: Container(
         width: double.infinity,
@@ -156,27 +141,15 @@ class _PaymentPageState extends State<PaymentPage> {
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(8),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: const Color(0xFF0EA5E9).withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  )
-                ]
-              : [],
         ),
         child: Row(
           children: [
-            // Radio button icon
             Icon(
               isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
               color: isSelected ? const Color(0xFF0EA5E9) : Colors.grey[400],
               size: 22,
             ),
             const SizedBox(width: 12),
-
-            // Payment method name
             Expanded(
               child: Text(
                 method,
@@ -187,8 +160,6 @@ class _PaymentPageState extends State<PaymentPage> {
                 ),
               ),
             ),
-
-            // Payment logo/brand
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
@@ -197,12 +168,7 @@ class _PaymentPageState extends State<PaymentPage> {
               ),
               child: Text(
                 logo,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[700],
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.5,
-                ),
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.grey[700]),
               ),
             ),
           ],

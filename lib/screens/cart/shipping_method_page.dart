@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:merchverse/routes/app_routes.dart';
+import '../../models/cart_item_model.dart';
 
 class ShippingMethodSelectionPage extends StatefulWidget {
   const ShippingMethodSelectionPage({super.key});
@@ -12,15 +13,21 @@ class ShippingMethodSelectionPage extends StatefulWidget {
 class _ShippingMethodSelectionPageState
     extends State<ShippingMethodSelectionPage> {
   String _selectedMethod = 'Standard Express';
+  int _selectedPrice = 10000;
 
-  final List<String> _shippingMethods = [
-    'Standard Express',
-    'Quick Express',
-    'Instant Express',
+  final List<Map<String, dynamic>> _shippingMethods = [
+    {'name': 'Standard Express', 'price': 10000},
+    {'name': 'Quick Express', 'price': 20000},
+    {'name': 'Instant Express', 'price': 30000},
   ];
 
   @override
   Widget build(BuildContext context) {
+    // Ambil arguments dari ShippingAddressPage
+    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final cartItems = args['cartItems'] as List<CartItemModel>; // langsung objek
+    final shippingAddress = args['shippingAddress'] as Map<String, dynamic>;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -29,10 +36,7 @@ class _ShippingMethodSelectionPageState
         ),
         title: const Text(
           'Shipping Method',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
@@ -62,12 +66,15 @@ class _ShippingMethodSelectionPageState
             const SizedBox(height: 24),
 
             // Shipping Method Options
-            ...(_shippingMethods.map((method) {
+            ..._shippingMethods.map((method) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: _buildShippingMethodOption(method),
+                child: _buildShippingMethodOption(
+                  method['name'],
+                  method['price'],
+                ),
               );
-            }).toList()),
+            }).toList(),
 
             const SizedBox(height: 24),
 
@@ -97,13 +104,22 @@ class _ShippingMethodSelectionPageState
             ),
             const SizedBox(height: 16),
 
-            // Continue to Payment Button
+            // Continue to Order Summary / Payment Button
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.payment);
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.orderSummary,
+                    arguments: {
+                      'cartItems': cartItems, // langsung list CartItemModel
+                      'shippingAddress': shippingAddress,
+                      'shippingMethod': _selectedMethod,
+                      'shippingPrice': _selectedPrice,
+                    },
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue[600],
@@ -128,13 +144,14 @@ class _ShippingMethodSelectionPageState
     );
   }
 
-  Widget _buildShippingMethodOption(String method) {
+  Widget _buildShippingMethodOption(String method, int price) {
     final bool isSelected = _selectedMethod == method;
 
     return GestureDetector(
       onTap: () {
         setState(() {
           _selectedMethod = method;
+          _selectedPrice = price;
         });
       },
       child: Container(
@@ -152,7 +169,7 @@ class _ShippingMethodSelectionPageState
           children: [
             Expanded(
               child: Text(
-                method,
+                '$method  -  Rp ${price.toString()}',
                 style: TextStyle(
                   fontSize: 15,
                   color: isSelected ? Colors.blue[700] : Colors.grey[700],

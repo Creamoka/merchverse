@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../widgets/merchverse_appbar.dart';
 import 'edit_profile_page.dart';
 import '../misc/about_app_page.dart';
 import '../../widgets/merchverse_bottom_nav.dart';
-
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -13,46 +14,95 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  bool _isLoggedIn = true;
+  Map<String, dynamic>? _userData;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      setState(() {
+        _userData = null;
+        _isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (doc.exists) {
+        setState(() {
+          _userData = doc.data();
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _userData = {
+            'firstName': 'No Name',
+            'lastName': '',
+            'email': user.email ?? '',
+            'address': '',
+          };
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _userData = null;
+        _isLoading = false;
+      });
+    }
+  }
+
+  bool get _isLoggedIn => _userData != null;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    bottomNavigationBar: const MerchverseBottomNav(currentIndex: 3),
+      bottomNavigationBar: const MerchverseBottomNav(currentIndex: 3),
       appBar: MerchverseAppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
       ),
-      body: _isLoggedIn ? _buildLoggedInView() : _buildNotLoggedInView(),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _isLoggedIn
+              ? _buildLoggedInView()
+              : _buildNotLoggedInView(),
     );
   }
 
   Widget _buildLoggedInView() {
+    final name =
+        "${_userData?['firstName'] ?? ''} ${_userData?['lastName'] ?? ''}";
+    final email = _userData?['email'] ?? '';
+    final address = _userData?['address'] ?? '';
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _profileHeader(
-            name: 'Username',
-            email: 'user@email.com',
-            address:
-                'Jl. Mekar Indah No. 27, Jln DARMO DE Sukaranda, Jawa Kabupaten, Jawa Barat 4023, Indonesia',
-          ),
+          _profileHeader(name: name, email: email, address: address),
           const SizedBox(height: 18),
           _menuSection(children: [
             _menuTile(
               icon: Icons.edit_outlined,
               label: 'Edit Profile',
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                final updated = await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const EditProfilePage()),
                 );
+                if (updated == true) _loadUserData();
               },
             ),
             _menuTile(
@@ -183,9 +233,7 @@ class _AccountPageState extends State<AccountPage> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
-      child: Column(
-        children: children,
-      ),
+      child: Column(children: children),
     );
   }
 
@@ -218,9 +266,12 @@ class _AccountPageState extends State<AccountPage> {
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              setState(() => _isLoggedIn = false);
+              await FirebaseAuth.instance.signOut();
+              setState(() {
+                _userData = null;
+              });
             },
             child: const Text('Logout', style: TextStyle(color: Colors.red)),
           ),

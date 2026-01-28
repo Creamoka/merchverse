@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/merchverse_bottom_nav.dart';
-
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -13,43 +14,61 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   int _currentIndex = 2;
 
-  final List<Map<String, dynamic>> historyItems = [
-    {
-      'image': 'assets/images/hatsune_miku_1.png',
-      'title':
-          'Hatsune Miku - Hatsune Miku Trio-Try-IT Prize Figure (Paint Girl Ver.)',
-      'price': 310.00,
-      'date': '01/15/2025',
-      'exclusive': true,
-      'collaboration': true,
-    },
-    {
-      'image': 'assets/images/hatsune_miku_2.png',
-      'title':
-          'Hatsune Miku - Sakura Miku Noodle Stopper Prize Figure (Wink Ver.)',
-      'price': 310.00,
-      'date': '01/10/2025',
-      'exclusive': true,
-      'collaboration': false,
-    },
-    {
-      'image': 'assets/images/hatsune_miku_3.png',
-      'title':
-          'Hatsune Miku - Hatsune Miku Trio-Try-IT Prize Figure (Classical Retro Ver.)',
-      'price': 310.00,
-      'date': '01/05/2025',
-      'exclusive': false,
-      'collaboration': true,
-    },
-  ];
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
+  bool _loading = true;
+  List<Map<String, dynamic>> historyItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserOrders();
+  }
+
+  Future<void> _loadUserOrders() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    try {
+      final snapshot = await _firestore
+          .collection('orders')
+          .where('userId', isEqualTo: user.uid)
+          .orderBy('timestamp', descending: true) // pakai timestamp
+          .get();
+
+      final orders = snapshot.docs.map((doc) {
+        final data = doc.data();
+        final items = data['items'] as List<dynamic>? ?? [];
+        final firstItem = items.isNotEmpty ? items[0] : null;
+
+        return {
+          'image': firstItem != null ? firstItem['image'] ?? '' : '',
+          'title': firstItem != null ? firstItem['title'] ?? 'Product' : 'Product',
+          'price': data['total'] ?? 0.0,
+          'date': data['timestamp'] != null
+              ? (data['timestamp'] as Timestamp).toDate().toString().split(' ')[0]
+              : '',
+          'exclusive': firstItem != null && (firstItem['exclusive'] == true),
+          'collaboration': firstItem != null && (firstItem['collaboration'] == true),
+        };
+      }).toList();
+
+      setState(() {
+        historyItems = orders;
+        _loading = false;
+      });
+    } catch (e) {
+      debugPrint('Error loading orders: $e');
+      setState(() => _loading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: const MerchverseBottomNav(currentIndex: 2),
       backgroundColor: Colors.white,
-
-      // ✅ APPBAR STYLE SAMA HOME
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
@@ -79,37 +98,47 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
         ],
       ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : historyItems.isEmpty
+              ? Center(
+                  child: Text(
+                    'No orders yet.',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                  ),
+                )
+              : ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
+                  children: [
+                    const Text(
+                      'Order History',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Here are all your previous purchases',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Montserrat',
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
 
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-        children: [
-          const Text(
-            'Order History',
-            style: TextStyle(
-              fontSize: 20,
-              fontFamily: 'Montserrat',
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Yes, you really bought all of these',
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: 'Montserrat',
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // ✅ LIST ITEM
-          ...historyItems.map((item) => _HistoryCard(item: item)).toList(),
-        ],
-      ),
+                    // LIST ITEM
+                    ...historyItems.map((item) => _HistoryCard(item: item)).toList(),
+                  ],
+                ),
     );
   }
 }
+
+// ---------- HISTORY CARD & TAG CHIP ----------
 
 class _HistoryCard extends StatelessWidget {
   final Map<String, dynamic> item;
@@ -128,7 +157,7 @@ class _HistoryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Colors.black.withOpacity(0.06),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -140,20 +169,29 @@ class _HistoryCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // image
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                item['image'],
-                width: 90,
-                height: 110,
-                fit: BoxFit.cover,
-              ),
+              child: item['image'] != ''
+                  ? Image.network(
+                      item['image'],
+                      width: 90,
+                      height: 110,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 90,
+                        height: 110,
+                        color: Colors.grey[200],
+                        child: Icon(Icons.image, color: Colors.grey[400]),
+                      ),
+                    )
+                  : Container(
+                      width: 90,
+                      height: 110,
+                      color: Colors.grey[200],
+                      child: Icon(Icons.image, color: Colors.grey[400]),
+                    ),
             ),
-
             const SizedBox(width: 14),
-
-            // text
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,7 +208,6 @@ class _HistoryCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 10),
-
                   Text(
                     '\$${(item['price'] as num).toStringAsFixed(2)}',
                     style: const TextStyle(
@@ -180,9 +217,7 @@ class _HistoryCard extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-
                   const SizedBox(height: 4),
-
                   Text(
                     'Date: ${item['date']}',
                     style: TextStyle(
@@ -191,9 +226,7 @@ class _HistoryCard extends StatelessWidget {
                       color: Colors.grey[600],
                     ),
                   ),
-
                   const SizedBox(height: 12),
-
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -233,7 +266,7 @@ class _TagChip extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color),
-        color: color.withValues(alpha: 0.10),
+        color: color.withOpacity(0.1),
       ),
       child: Text(
         text,

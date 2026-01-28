@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:merchverse/services/firebase/product_service.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/merchverse_bottom_nav.dart';
+import '../../models/product_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,33 +14,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static const _accent = Color(0xFF6DBFFF);
-  int _currentIndex = 0;
 
-  final List<Map<String, dynamic>> featuredProducts = [
-    {
-      'id': 1,
-      'image': 'assets/images/banner1.png',
-      'title':
-          'Hatsune Miku - Hatsune Miku Luminasta Prize Figure (Unshuttered SEKAI Ver.)',
-      'description':
-          'This figure captures Hatsune Miku’s confidence and artistic energy in stunning detail.',
-    },
-    {
-      'id': 2,
-      'image': 'assets/images/banner2.png',
-      'title': 'Hatsune Miku - Hatsune Miku Luminasta (Shuttered SEKAI Ver.)',
-      'description':
-          'Hatsune Miku brings an ethereal, dreamlike presence with intricate details.',
-    },
-    {
-      'id': 3,
-      'image': 'assets/images/banner3.png',
-      'title':
-          'Hatsune Miku - Hatsune Miku Luminasta Prize Figure (Sleepwear Ver.)',
-      'description':
-          'This prize figure captures Hatsune Miku’s soft, relaxed charm.',
-    },
-  ];
+  final ProductService _productService = ProductService();
 
   @override
   Widget build(BuildContext context) {
@@ -82,17 +59,17 @@ class _HomePageState extends State<HomePage> {
           children: [
             // Banner
             Container(
-              width: double.infinity,
-              height: 95,
-              margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/AppBanner.png'),
-                  fit: BoxFit.cover,
-                ),
+            width: double.infinity,
+            height: 95,
+            margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              image: DecorationImage(
+                image: NetworkImage('https://images2.alphacoders.com/130/thumb-1920-1309358.png'),
+                fit: BoxFit.cover,
               ),
             ),
+          ),
 
             const SizedBox(height: 10),
 
@@ -143,106 +120,130 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 420,
-                viewportFraction: 0.78,
-                enlargeCenterPage: false,
-                enableInfiniteScroll: true,
-                autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 4),
-              ),
-              items: featuredProducts.map((product) {
-                return GestureDetector(
-                  onTap: () {
-                    // sementara arahkan ke Product Page dulu
-                    Navigator.pushNamed(context, AppRoutes.product);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.grey.shade200),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+            // ==========================
+            // FIREBASE FEATURED CAROUSEL
+            // ==========================
+            StreamBuilder<List<ProductModel>>(
+              stream: _productService.streamFeaturedProducts(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox(
+                    height: 420,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return SizedBox(
+                    height: 120,
+                    child: Center(
+                      child: Text(
+                        'Error: ${snapshot.error}',
+                        style: const TextStyle(color: Colors.red),
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
-                          ),
-                          child: Image.asset(
-                            product['image'],
-                            height: 240,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              height: 240,
-                              color: Colors.grey.shade200,
-                              child: const Icon(Icons.image_not_supported),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                            children: [
-                              Text(
-                                product['title'],
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                product['description'],
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.grey.shade700,
-                                  height: 1.4,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 4,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 12),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 42,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: _accent,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(24),
-                                    ),
-                                    elevation: 0,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, AppRoutes.product);
-                                  },
-                                  child: const Text('View Products'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                  );
+                }
+
+                final products = snapshot.data ?? <ProductModel>[];
+
+                if (products.isEmpty) {
+                  return const SizedBox(
+                    height: 120,
+                    child: Center(
+                      child: Text('Belum ada featured products'),
                     ),
+                  );
+                }
+
+                return CarouselSlider(
+                  options: CarouselOptions(
+                    height: 420,
+                    viewportFraction: 0.78,
+                    enlargeCenterPage: false,
+                    enableInfiniteScroll: true,
+                    autoPlay: true,
+                    autoPlayInterval: const Duration(seconds: 4),
                   ),
+                  items: products.map((product) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.product, // GANTI JADI PRODUCT DETAIL
+                          arguments: product.id,
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.grey.shade200),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(16),
+                                topRight: Radius.circular(16),
+                              ),
+                              child: Image.network(
+                                product.imageUrl,
+                                height: 240,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Container(
+                                  height: 240,
+                                  color: Colors.grey.shade200,
+                                  child: const Icon(Icons.image_not_supported),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    product.title,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    product.description,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey.shade700,
+                                      height: 1.4,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 4,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 12),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 );
-              }).toList(),
+              },
             ),
 
             const SizedBox(height: 20),

@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
 import '../../routes/app_routes.dart';
 
-class PaymentSuccessPage extends StatelessWidget {
+class PaymentSuccessPage extends StatefulWidget {
   const PaymentSuccessPage({super.key});
+
+  @override
+  State<PaymentSuccessPage> createState() => _PaymentSuccessPageState();
+}
+
+class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Delay 3 detik, lalu otomatis kembali ke home
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.home,
+          (route) => false,
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +50,6 @@ class PaymentSuccessPage extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 height: 46,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      AppRoutes.home,
-                      (route) => false,
-                    );
-                  },
-                  child: const Text("Back to Home"),
-                ),
               ),
             ],
           ),

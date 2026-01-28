@@ -1,17 +1,25 @@
 class ProductModel {
   final String id;
-  final String name;
+
+  // UI fields (dipakai Home / Detail / Product Page)
+  final String title;
+  final String description;
   final double price;
-  final String image;
+  final String imageUrl;
+
+  // flags
   final bool exclusive;
   final bool collaboration;
-  final String releaseDate; // 🔥 STRING DULU
+
+  // meta
+  final String releaseDate;
 
   ProductModel({
     required this.id,
-    required this.name,
+    required this.title,
+    required this.description,
     required this.price,
-    required this.image,
+    required this.imageUrl,
     required this.exclusive,
     required this.collaboration,
     required this.releaseDate,
@@ -23,14 +31,30 @@ class ProductModel {
   ) {
     return ProductModel(
       id: id,
-      name: data['name'] ?? '',
-      price: (data['price'] as num).toDouble(), // 🔥 AMAN
-      image: data['image'] ?? '',
+
+      // 🔥 support 2 versi key:
+      // - versi baru: title, description, imageUrl
+      // - versi lama: name, image
+      title: data['title'] ?? data['name'] ?? '',
+      description: data['description'] ?? '',
+      price: (data['price'] as num?)?.toDouble() ?? 0.0,
+      imageUrl: data['imageUrl'] ?? data['image'] ?? '',
+
       exclusive: data['exclusive'] ?? false,
       collaboration: data['collaboration'] ?? false,
       releaseDate: data['releaseDate'] ?? '',
     );
   }
 
-  get description => null;
+  Map<String, dynamic> toFirestore() {
+    return {
+      'title': title,
+      'description': description,
+      'price': price,
+      'imageUrl': imageUrl,
+      'exclusive': exclusive,
+      'collaboration': collaboration,
+      'releaseDate': releaseDate,
+    };
+  }
 }
