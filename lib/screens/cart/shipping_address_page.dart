@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ShippingMethodPage extends StatefulWidget {
-  const ShippingMethodPage({Key? key}) : super(key: key);
+  const ShippingMethodPage({super.key});
 
   @override
   State<ShippingMethodPage> createState() => _ShippingMethodPageState();

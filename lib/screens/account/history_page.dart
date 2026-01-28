@@ -74,7 +74,7 @@ class HistoryPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          ...historyItems.map((item) => _buildHistoryItem(context, item)).toList(),
+          ...historyItems.map((item) => _buildHistoryItem(context, item)),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

@@ -58,7 +58,7 @@ class CartPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          ...cartItems.map((item) => _buildCartItem(context, item)).toList(),
+          ...cartItems.map((item) => _buildCartItem(context, item)),
 
           const SizedBox(height: 32),
 

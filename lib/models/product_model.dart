@@ -31,4 +31,6 @@ class ProductModel {
       releaseDate: data['releaseDate'] ?? '',
     );
   }
+
+  get description => null;
 }

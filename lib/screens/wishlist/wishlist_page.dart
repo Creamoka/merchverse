@@ -76,7 +76,7 @@ class WishlistPage extends StatelessWidget {
           const SizedBox(height: 24),
           ...wishlistItems
               .map((item) => _buildWishlistItem(context, item))
-              .toList(),
+              ,
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

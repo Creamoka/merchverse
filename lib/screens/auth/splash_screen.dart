@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Navigator.pushReplacementNamed(
       context,
-      AppRoutes.product, // langsung ke product dulu
+      AppRoutes.home, // langsung ke product dulu
     );
   }
 
