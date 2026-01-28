@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 
+<<<<<<< HEAD
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
 
@@ -19,3 +19,5 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 }
+=======
+>>>>>>> merchverse/rizal
