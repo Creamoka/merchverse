@@ -51,8 +51,6 @@ class WishlistPage extends StatelessWidget {
                 letterSpacing: 0.5,
               ),
             ),
-            const SizedBox(width: 8),
-            Image.asset('assets/images/logo.png', height: 22),
           ],
         ),
         actions: [

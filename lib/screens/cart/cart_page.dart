@@ -49,15 +49,17 @@ class CartPage extends StatelessWidget {
                 letterSpacing: 0.5,
               ),
             ),
-            const SizedBox(width: 8),
-            Image.asset('assets/images/logo.png', height: 22),
           ],
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.favorite_border),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.shopping_bag_outlined),
             onPressed: () {
-              Navigator.pushNamed(context, '/wishlist');
+              Navigator.pushNamed(context, '/cart');
             },
           ),
           const SizedBox(width: 6),
