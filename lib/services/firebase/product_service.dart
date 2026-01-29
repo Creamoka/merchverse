@@ -12,7 +12,7 @@ class ProductService {
         .map((snapshot) => snapshot.docs.map((doc) {
               return ProductModel.fromFirestore(
                 doc.id,
-                doc.data() as Map<String, dynamic>,
+                doc.data(),
               );
             }).toList());
   }

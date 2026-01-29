@@ -13,12 +13,12 @@ class ShippingMethodSelectionPage extends StatefulWidget {
 class _ShippingMethodSelectionPageState
     extends State<ShippingMethodSelectionPage> {
   String _selectedMethod = 'Standard Express';
-  int _selectedPrice = 10000;
+  int _selectedPrice = 5;
 
   final List<Map<String, dynamic>> _shippingMethods = [
-    {'name': 'Standard Express', 'price': 10000},
-    {'name': 'Quick Express', 'price': 20000},
-    {'name': 'Instant Express', 'price': 30000},
+    {'name': 'Standard Express', 'price': 5},
+    {'name': 'Quick Express', 'price': 10},
+    {'name': 'Instant Express', 'price': 15},
   ];
 
   @override
@@ -74,7 +74,7 @@ class _ShippingMethodSelectionPageState
                   method['price'],
                 ),
               );
-            }).toList(),
+            }),
 
             const SizedBox(height: 24),
 
@@ -112,7 +112,7 @@ class _ShippingMethodSelectionPageState
                 onPressed: () {
                   Navigator.pushNamed(
                     context,
-                    AppRoutes.payment,
+                    AppRoutes.orderSummary,
                     arguments: {
                       'cartItems': cartItems, // langsung list CartItemModel
                       'shippingAddress': shippingAddress,
@@ -169,7 +169,7 @@ class _ShippingMethodSelectionPageState
           children: [
             Expanded(
               child: Text(
-                '$method  -  Rp ${price.toString()}',
+                '$method  -  Usd ${price.toString()}',
                 style: TextStyle(
                   fontSize: 15,
                   color: isSelected ? Colors.blue[700] : Colors.grey[700],

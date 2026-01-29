@@ -51,9 +51,9 @@ class AboutAppPage extends StatelessWidget {
             const SizedBox(height: 20),
 
             _buildSection(
-              'Before anything else, I want to make this clear: this collaboration is not official. '
+              'Before anything else, We want to make this clear: this collaboration is not official. '
               'This app is just a fun, personal project.\n\n'
-              'I\'m the Project Owner of this app, handling most of the development myself, with some help from friends during the process.',
+              'I\'m the Project Owner of this app, handling most of the development myself, with my friends during the process.',
             ),
 
             const SizedBox(height: 16),
@@ -61,22 +61,22 @@ class AboutAppPage extends StatelessWidget {
             _buildSection(
               'This app might not look as polished as other apps you\'ve used to and that\'s totally fine. '
               'It may take time a small productive project to improve my skills. '
-              'I wasn\'t sure what theme to go with, so I thought, "what if I make a merch app and \'collaborate\' with Hatsune Miku?" '
+              'We wasn\'t sure what theme to go with, so we thought, "what if we make a merch app and \'collaborate\' with Hatsune Miku?" '
               'And yeah, that\'s how this happened!',
             ),
 
             const SizedBox(height: 16),
 
             _buildSection(
-              'Most of the products and other assets used in this app are taken from the internet, since I\'m still learning and not very good at creating assets from scratch yet. '
-              'I tried to give credit wherever possible, but I knew it might still look like I used some things without permission. '
+              'Most of the products and other assets used in this app are taken from the internet, since We still learning and not very good at creating assets from scratch yet. '
+              'We tried to give credit wherever possible, but We knew it might still look like We used some things without permission. '
               'Oops. Sorry about that. This project is made purely for fun and learning purposes.',
             ),
 
             const SizedBox(height: 16),
 
             _buildSection(
-              'If this app causes any issues or problems, feel free to DM me on Discord and I\'ll take it down right away. '
+              'If this app causes any issues or problems, feel free to DM me on Discord and We\'ll take it down right away. '
               'Let\'s keep things chill and friendly.',
             ),
 
@@ -109,8 +109,8 @@ class AboutAppPage extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        'assets/images/image_22.png',
+                      child: Image.network(
+                        'https://static.wikia.nocookie.net/projectsekai/images/f/fc/Stamp0799.png/revision/latest?cb=20250411210801',
                         width: 150,
                         height: 150,
                         fit: BoxFit.cover,
