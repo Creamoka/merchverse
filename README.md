@@ -81,19 +81,19 @@ Project ini menggunakan Firebase Firestore sebagai database utama, khususnya unt
 Screenshot & Video:  
 
 ### Home
-<img src="screenshots/home.jpg" width="50%">
+![Home](screenshots/home.jpg)
 
 ### Product
-<img src="screenshots/product.jpg" width="50%">
+![Product](screenshots/product.jpg)
 
 ### Product Detail
-<img src="screenshots/detail.jpg" width="50%">
+![Detail](screenshots/detail.jpg)
 
 ### Cart & Checkout
-<img src="screenshots/checkout.jpg" width="50%">
+![Checkout](screenshots/checkout.jpg)
 
 ### Payment Success
-<img src="screenshots/success.jpg" width="50%">
+![Success](screenshots/success.jpg)
 
 ---
 
