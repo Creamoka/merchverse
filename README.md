@@ -78,7 +78,7 @@ Project ini menggunakan Firebase Firestore sebagai database utama, khususnya unt
 ## 📸 Screenshots & Video
 
 ### Google Drive
-Screenshot & Video:  
+Screenshot & Video:  https://drive.google.com/drive/folders/1r78QBHRc-ji4KMlPsLiT1psgXWd9KaU7
 
 ### Home
 ![Home](screenshots/home.jpg)
