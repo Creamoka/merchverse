@@ -16,23 +16,23 @@ Aplikasi ini dirancang untuk mensimulasikan pengalaman belanja merchandise, mula
 
 ---
 
-## Fitur Utama
+## 🎯 Fitur Utama
 
-### Home Page
+### 🏠 Home Page
 - Banner dan highlight event collaboration
 - Featured Picks (carousel)
 - Shortcut ke halaman lain lewat bottom navigation
 
-### Product Page
+### 🛍️ Product Page
 - List produk dari Firestore
 - Search produk berdasarkan nama
 - Tampilan product card yang clean dan konsisten
 
-### Product Detail
+### 🔎 Product Detail
 - Detail lengkap produk (gambar, deskripsi, harga, info lain)
 - Tombol Add to Cart
 
-### Cart & Checkout Flow
+### 🛒 Cart & Checkout Flow
 Checkout dibuat bertahap supaya terasa realistis seperti e-commerce pada umumnya:
 - Cart Page
 - Shipping Address
@@ -42,13 +42,13 @@ Checkout dibuat bertahap supaya terasa realistis seperti e-commerce pada umumnya
 - Payment Success Notification
 - Redirect kembali ke Home Page
 
-### Wishlist
+### ❤️ Wishlist
 - Halaman wishlist untuk menyimpan produk favorit
 
-### History
+### 🧾 History
 - Riwayat transaksi/pembelian user
 
-### Account Page
+### 👤 Account Page
 - Profile section
 - Edit profile
 - About App
@@ -56,7 +56,7 @@ Checkout dibuat bertahap supaya terasa realistis seperti e-commerce pada umumnya
 
 ---
 
-## Firebase Integration
+## 🔥 Firebase Integration
 
 Project ini menggunakan Firebase Firestore sebagai database utama, khususnya untuk:
 - Data produk (collection: `products`)
@@ -65,7 +65,7 @@ Project ini menggunakan Firebase Firestore sebagai database utama, khususnya unt
 
 ---
 
-## Tech Stack
+## 🧑‍💻 Tech Stack
 
 - Flutter (Dart)
 - Firebase Firestore
@@ -75,32 +75,35 @@ Project ini menggunakan Firebase Firestore sebagai database utama, khususnya unt
 
 ---
 
-## 📸 Screenshots
+## 📸 Screenshots & Video
+
+### Google Drive
+Screenshot & Video:  
 
 ### Home
-![Home](screenshots/home.png)
+<img src="screenshots/home.jpg" width="50%">
 
 ### Product
-![Product](screenshots/product.png)
+<img src="screenshots/product.jpg" width="50%">
 
 ### Product Detail
-![Detail](screenshots/detail.png)
+<img src="screenshots/detail.jpg" width="50%">
 
 ### Cart & Checkout
-![Checkout](screenshots/checkout.png)
+<img src="screenshots/checkout.jpg" width="50%">
 
 ### Payment Success
-![Success](screenshots/success.png)
+<img src="screenshots/success.jpg" width="50%">
 
 ---
 
 ## 📦 APK Release
 
-- **Latest Release:** `release/merchverse.apk`
+- **Latest Release:** `https://github.com/Creamoka/merchverse/releases/tag/Merchverse`
 
 ---
 
-## Team
+## 👥 Team
 
 - **Arya Maulana Yusuf** — Project Owner, App Designer, Developer
 - Arrah Hilmi — Developer  

@@ -92,10 +92,10 @@ class AboutAppPage extends StatelessWidget {
             const SizedBox(height: 12),
 
             _buildTeamMember('Arya Maulana Yusuf', 'Project Owner, App Designer, Developer'),
-            _buildTeamMember('Arrah Hilmi', 'Developer'),
-            _buildTeamMember('Moch Cahyahadi F', 'Developer'),
-            _buildTeamMember('Rizal', 'Developer'),
-            _buildTeamMember('Syihab', 'Developer'),
+            _buildTeamMember('Arrafi Hilmi', 'Developer'),
+            _buildTeamMember('Muhammad Ilham Syihabudin', 'Developer'),
+            _buildTeamMember('Muhammad Rizal Afrizal', 'Developer'),
+            _buildTeamMember('Mochammad Cahyahadi Fadhlurrahman', 'Developer'),
 
             const SizedBox(height: 26),
 
