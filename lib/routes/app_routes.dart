@@ -40,10 +40,35 @@ class AppRoutes {
     wishlist: (_) => const WishlistPage(),
     history: (_) => const HistoryPage(),
     account: (_) => const AccountPage(),
-    shippingAddress: (_) => const ShippingAddressPage(cartItems: [],),
+    shippingAddress: (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>? ??
+          {};
+      return ShippingAddressPage(cartItems: args['cartItems'] ?? []);
+    },
     shippingMethod: (_) => const ShippingMethodSelectionPage(),
-    payment: (_) => const PaymentPage(cartItems: [], shippingAddress: {}, shippingMethod: '', shippingPrice: 0,),
-    orderSummary: (_) => const OrderSummaryPage(cartItems: [], shippingMethod: '', shippingPrice: 0, paymentMethod: '',),
+    payment: (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>? ??
+          {};
+      return PaymentPage(
+        cartItems: args['cartItems'] ?? [],
+        shippingAddress: args['shippingAddress'] ?? {},
+        shippingMethod: args['shippingMethod'] ?? '',
+        shippingPrice: args['shippingPrice'] ?? 0,
+      );
+    },
+    orderSummary: (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>? ??
+          {};
+      return OrderSummaryPage(
+        cartItems: args['cartItems'] ?? [],
+        shippingMethod: args['shippingMethod'] ?? '',
+        shippingPrice: args['shippingPrice'] ?? 0,
+        paymentMethod: args['paymentMethod'] ?? '',
+      );
+    },
     paymentSuccess: (_) => const PaymentSuccessPage(),
   };
 }

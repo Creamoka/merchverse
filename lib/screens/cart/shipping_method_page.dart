@@ -112,7 +112,7 @@ class _ShippingMethodSelectionPageState
                 onPressed: () {
                   Navigator.pushNamed(
                     context,
-                    AppRoutes.orderSummary,
+                    AppRoutes.payment,
                     arguments: {
                       'cartItems': cartItems, // langsung list CartItemModel
                       'shippingAddress': shippingAddress,

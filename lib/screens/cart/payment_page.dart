@@ -3,17 +3,17 @@ import 'package:merchverse/routes/app_routes.dart';
 import '../../models/cart_item_model.dart';
 
 class PaymentPage extends StatefulWidget {
-  final List<CartItemModel> cartItems;
-  final Map<String, dynamic> shippingAddress;
-  final String shippingMethod;
-  final int shippingPrice;
+  final List<CartItemModel>? cartItems;
+  final Map<String, dynamic>? shippingAddress;
+  final String? shippingMethod;
+  final int? shippingPrice;
 
   const PaymentPage({
     super.key,
-    required this.cartItems,
-    required this.shippingAddress,
-    required this.shippingMethod,
-    required this.shippingPrice,
+    this.cartItems,
+    this.shippingAddress,
+    this.shippingMethod,
+    this.shippingPrice,
   });
 
   @override
@@ -25,10 +25,15 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final cartItems = widget.cartItems;
-    final shippingAddress = widget.shippingAddress;
-    final shippingMethod = widget.shippingMethod;
-    final shippingPrice = widget.shippingPrice;
+     // Ambil data dari arguments jika tersedia, jika tidak gunakan dari widget properties
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+    final cartItems = args?['cartItems'] ?? widget.cartItems ?? [];
+    final shippingAddress =
+        args?['shippingAddress'] ?? widget.shippingAddress ?? {};
+    final shippingMethod =
+        args?['shippingMethod'] ?? widget.shippingMethod ?? '';
+    final shippingPrice = args?['shippingPrice'] ?? widget.shippingPrice ?? 0;
 
     return Scaffold(
       appBar: AppBar(

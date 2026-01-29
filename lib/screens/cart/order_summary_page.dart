@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:merchverse/routes/app_routes.dart';
 import '../../models/cart_item_model.dart';
+import '../../services/firebase/cart_service.dart';
 
 class OrderSummaryPage extends StatelessWidget {
   final List<CartItemModel> cartItems;
@@ -81,7 +82,10 @@ class OrderSummaryPage extends StatelessWidget {
 
             // Subtotal / Shipping / Tax / Total
             _buildPriceRow('Subtotal', subtotal),
-            _buildPriceRow('Shipping ($shippingMethod)', shippingPrice.toDouble()),
+            _buildPriceRow(
+              'Shipping ($shippingMethod)',
+              shippingPrice.toDouble(),
+            ),
             _buildPriceRow('Tax', tax),
             const SizedBox(height: 8),
             _buildPriceRow('Total', total, isTotal: true),
@@ -101,15 +105,19 @@ class OrderSummaryPage extends StatelessWidget {
                     // Simpan ke Firestore
                     await _firestore.collection('orders').add({
                       'userId': user.uid,
-                      'items': cartItems.map((e) => e.toMap()).toList(),
+                      'items': cartItems.map((e) => e.toFirestore()).toList(),
                       'shippingMethod': shippingMethod,
                       'shippingPrice': shippingPrice,
                       'paymentMethod': paymentMethod,
                       'subtotal': subtotal,
                       'tax': tax,
                       'total': total,
-                      'createdAt': FieldValue.serverTimestamp(),
+                      'timestamp': FieldValue.serverTimestamp(),
                     });
+
+                    // Hapus semua cart items setelah order berhasil
+                    final cartService = CartService();
+                    await cartService.clearCart();
 
                     Navigator.pushNamed(context, AppRoutes.paymentSuccess);
                   } catch (e) {
@@ -120,13 +128,18 @@ class OrderSummaryPage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0EA5E9),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   elevation: 0,
                 ),
                 child: const Text(
                   'Pay Now',
                   style: TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -142,9 +155,18 @@ class OrderSummaryPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontWeight: isTotal ? FontWeight.bold : FontWeight.normal)),
-          Text('\$${value.toStringAsFixed(2)}',
-              style: TextStyle(fontWeight: isTotal ? FontWeight.bold : FontWeight.normal)),
+          Text(
+            label,
+            style: TextStyle(
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+          Text(
+            '\$${value.toStringAsFixed(2)}',
+            style: TextStyle(
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
         ],
       ),
     );

@@ -17,51 +17,109 @@ class _HistoryPageState extends State<HistoryPage> {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
-  bool _loading = true;
-  List<Map<String, dynamic>> historyItems = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserOrders();
-  }
-
-  Future<void> _loadUserOrders() async {
+  Stream<List<Map<String, dynamic>>> _getOrdersStream() {
     final user = _auth.currentUser;
-    if (user == null) return;
+    if (user == null) return Stream.value([]);
 
-    try {
-      final snapshot = await _firestore
-          .collection('orders')
-          .where('userId', isEqualTo: user.uid)
-          .orderBy('timestamp', descending: true) // pakai timestamp
-          .get();
+    debugPrint('Getting orders for user: ${user.uid}');
 
-      final orders = snapshot.docs.map((doc) {
-        final data = doc.data();
-        final items = data['items'] as List<dynamic>? ?? [];
-        final firstItem = items.isNotEmpty ? items[0] : null;
+    return _firestore
+        .collection('orders')
+        .where('userId', isEqualTo: user.uid)
+        .snapshots()
+        .map((snapshot) {
+          debugPrint('📊 Snapshot received with ${snapshot.docs.length} docs');
 
-        return {
-          'image': firstItem != null ? firstItem['image'] ?? '' : '',
-          'title': firstItem != null ? firstItem['title'] ?? 'Product' : 'Product',
-          'price': data['total'] ?? 0.0,
-          'date': data['timestamp'] != null
-              ? (data['timestamp'] as Timestamp).toDate().toString().split(' ')[0]
-              : '',
-          'exclusive': firstItem != null && (firstItem['exclusive'] == true),
-          'collaboration': firstItem != null && (firstItem['collaboration'] == true),
-        };
-      }).toList();
+          try {
+            // Sort manually - handle missing timestamp field
+            final docs = snapshot.docs;
+            debugPrint('About to sort ${docs.length} docs');
 
-      setState(() {
-        historyItems = orders;
-        _loading = false;
-      });
-    } catch (e) {
-      debugPrint('Error loading orders: $e');
-      setState(() => _loading = false);
-    }
+            docs.sort((a, b) {
+              try {
+                final aData = a.data();
+                final bData = b.data();
+
+                final aTime =
+                    (aData['timestamp'] as Timestamp?)?.toDate() ??
+                    DateTime(1970);
+                final bTime =
+                    (bData['timestamp'] as Timestamp?)?.toDate() ??
+                    DateTime(1970);
+                return bTime.compareTo(aTime);
+              } catch (e) {
+                debugPrint('Error in sort comparison: $e');
+                return 0; // fallback
+              }
+            });
+
+            debugPrint('Sorting done');
+
+            final results = <Map<String, dynamic>>[];
+
+            debugPrint('Starting loop for ${docs.length} docs');
+
+            for (int i = 0; i < docs.length; i++) {
+              try {
+                debugPrint('Loop iteration $i');
+                final doc = docs[i];
+                final data = doc.data();
+                debugPrint('📄 Order $i: doc.id=${doc.id}');
+                debugPrint('   data keys: ${data.keys.toList()}');
+
+                final itemsList = data['items'];
+                debugPrint('   items type: ${itemsList.runtimeType}');
+
+                final items = itemsList as List<dynamic>? ?? [];
+                debugPrint('   items count: ${items.length}');
+
+                if (items.isEmpty) {
+                  debugPrint('   ⏭️  No items, skipping');
+                  continue;
+                }
+
+                final firstItem = items[0] as Map<dynamic, dynamic>?;
+                debugPrint('   firstItem type: ${firstItem.runtimeType}');
+
+                if (firstItem == null) {
+                  debugPrint('   ⏭️  firstItem is null, skipping');
+                  continue;
+                }
+
+                final image = (firstItem['image'] as String?) ?? '';
+                final name = (firstItem['name'] as String?) ?? 'Product';
+                final price = (data['total'] as num?)?.toDouble() ?? 0.0;
+
+                final timestamp = data['timestamp'] as Timestamp?;
+                final date = timestamp != null
+                    ? timestamp.toDate().toString().split(' ')[0]
+                    : 'N/A';
+
+                debugPrint('   ✅ Mapped: $name - \$$price on $date');
+
+                results.add({
+                  'image': image,
+                  'title': name,
+                  'price': price,
+                  'date': date,
+                  'exclusive': (firstItem['exclusive'] as bool?) ?? false,
+                  'collaboration':
+                      (firstItem['collaboration'] as bool?) ?? false,
+                });
+              } catch (e, st) {
+                debugPrint('   ❌ Error at iteration $i: $e');
+                debugPrint('   Stack: $st');
+              }
+            }
+
+            debugPrint('✨ Final results: ${results.length} items');
+            return results;
+          } catch (e, st) {
+            debugPrint('❌ ERROR in stream map: $e');
+            debugPrint('Stack: $st');
+            return [];
+          }
+        });
   }
 
   @override
@@ -98,42 +156,53 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
         ],
       ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : historyItems.isEmpty
-              ? Center(
-                  child: Text(
-                    'No orders yet.',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                  ),
-                )
-              : ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-                  children: [
-                    const Text(
-                      'Order History',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Here are all your previous purchases',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Montserrat',
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: _getOrdersStream(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-                    // LIST ITEM
-                    ...historyItems.map((item) => _HistoryCard(item: item)).toList(),
-                  ],
+          final historyItems = snapshot.data ?? [];
+
+          if (historyItems.isEmpty) {
+            return Center(
+              child: Text(
+                'No orders yet.',
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
+              ),
+            );
+          }
+
+          return ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
+            children: [
+              const Text(
+                'Order History',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
                 ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Here are all your previous purchases',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: 'Montserrat',
+                  color: Colors.grey[600],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // LIST ITEM
+              ...historyItems.map((item) => _HistoryCard(item: item)).toList(),
+            ],
+          );
+        },
+      ),
     );
   }
 }

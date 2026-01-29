@@ -42,7 +42,6 @@ class CartItemModel {
       'price': price,
       'image': imageUrl,
       'qty': qty,
-      'addedAt': FieldValue.serverTimestamp(),
     };
   }
 

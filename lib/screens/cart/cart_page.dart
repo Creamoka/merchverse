@@ -200,7 +200,7 @@ class CartPage extends StatelessWidget {
                       context,
                       AppRoutes.shippingAddress,
                       arguments: {
-                        'cartItems': items.map((item) => item.toMap()).toList(),
+                        'cartItems': items,
                       },
                     );
                   },
